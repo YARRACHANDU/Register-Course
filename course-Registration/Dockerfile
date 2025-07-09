@@ -1,15 +1,22 @@
-# Use a base OpenJDK image
-FROM openjdk:17-jdk-slim
+# Use official OpenJDK 17 image
+FROM eclipse-temurin:17-jdk
 
 # Set working directory inside the container
 WORKDIR /app
 
-# Copy the .jar file from the target folder
-COPY target/course-Registration-0.0.1-SNAPSHOT.jar app.jar
+# Copy Maven wrapper files and pom.xml first (to cache dependencies)
+COPY backend/mvnw .
+COPY backend/.mvn .mvn
+COPY backend/pom.xml .
 
-# Set environment port (Render uses this)
-ENV PORT=8080
-EXPOSE 8080
+# Download dependencies
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copy the rest of the source code
+COPY backend/src ./src
+
+# Package the application
+RUN ./mvnw clean package -DskipTests
+
+# Run the Spring Boot app
+CMD ["java", "-jar", "target/course-Registration-0.0.1-SNAPSHOT.jar"]

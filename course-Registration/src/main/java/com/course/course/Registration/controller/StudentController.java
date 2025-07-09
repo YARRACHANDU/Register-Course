@@ -11,7 +11,8 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://127.0.0.1:3000")
+
 public class StudentController {
     private final StudentService service;
 
