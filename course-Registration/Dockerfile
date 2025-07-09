@@ -13,7 +13,7 @@ COPY pom.xml .
 RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
 # Copy the rest of the project
-COPY src ./src
+COPY src ./target
 
 # Package the app
 RUN ./mvnw clean package -DskipTests
